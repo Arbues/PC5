@@ -1,0 +1,21 @@
+
+- name: Instalar Nginx
+  apt:
+    name: nginx
+    state: present
+
+- name: Generar certificados SSL autofirmados
+  command: openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj "/C=US/ST=State/L=City/O=Organization/OU=Department/CN=example.com" -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt
+  args:
+    creates: /etc/nginx/ssl/nginx.crt
+
+- name: Copiar la plantilla de configuración de Nginx
+  template:
+    src: templates/nginx.conf.j2
+    dest: /etc/nginx/sites-available/default
+  notify: Reiniciar Nginx
+
+- name: Habilitar y configurar el firewall UFW
+  ufw:
+    rule: allow
+    name: 'Nginx Full'

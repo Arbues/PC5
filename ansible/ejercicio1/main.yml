@@ -1,22 +1,21 @@
+---
 - name: Actualizar los paquetes del sistema
-  ---
-  - name: Actualizar los paquetes del sistema
-    apt:
-      update_cache: yes
-      upgrade: dist
+  apt:
+    update_cache: yes
+    upgrade: dist
 
-  - name: Configurar la zona horaria y locales
-    timezone:
-      name: "America/Lima"
+- name: Configurar la zona horaria y locales
+  timezone:
+    name: "America/Lima"
 
-  - name: Crear un grupo llamado admin
-    group:
-      name: admin
-      state: present
+- name: Crear un grupo llamado admin
+  group:
+    name: admin
+    state: present
 
-  - name: Crear un usuario devuser perteneciente al grupo admin con contraseña cifrada
-    user:
-      name: devuser
-      groups: admin
-      password: $6$OStSJfA6FA$ffSDaJBWfSpmnwlC6QWJwLG3PgZWQhPYUSezmRvSiUFpwSWy/57KuUuLg/4yGBpKx2TWYsPDz9Yq7nL2I2XT3/
-      state: present
+- name: Crear un usuario devuser perteneciente al grupo admin con contraseña cifrada
+  user:
+    name: devuser
+    groups: admin
+    password: $6$OStSJfA6FA$ffSDaJBWfSpmnwlC6QWJwLG3PgZWQhPYUSezmRvSiUFpwSWy/57KuUuLg/4yGBpKx2TWYsPDz9Yq7nL2I2XT3/
+    state: present
