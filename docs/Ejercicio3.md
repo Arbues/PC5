@@ -69,6 +69,10 @@ systemctl status nginx
 
 ss -tulpn | grep '500[0-2]'
 
+# Permisos para proceder
+
+sudo su
+
 # Verificar configuración de Nginx
 
 nginx -t
@@ -104,3 +108,11 @@ tail -f /var/log/nginx/access.log
 - El balanceador utiliza el método round-robin por defecto
 - Cada instancia Flask maneja su propio proceso Gunicorn
 - La configuración permite escalar horizontalmente añadiendo más instancias
+
+## Comprobacion de los resultados
+
+![](https://i.imgur.com/yi8oygS.png)
+![](https://i.imgur.com/oCTamNg.png)
+![](https://i.imgur.com/4XIUUdi.png)
+![](https://i.imgur.com/gIoJWs9.png)
+![](https://i.imgur.com/tk8cfRr.png)
