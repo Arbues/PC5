@@ -2,3 +2,15 @@
   service:
     name: nginx
     state: restarted
+
+- name: Recargar systemd
+  command: systemctl daemon-reload
+
+- name: Reiniciar Flask app
+  systemd:
+    name: flask_app_{{ item }}
+    state: restarted
+  with_items:
+    - 5000
+    - 5001
+    - 5002

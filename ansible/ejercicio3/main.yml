@@ -1,0 +1,50 @@
+---
+- name: Instalar dependencias de Python
+  apt:
+    name: python3-pip
+    state: present
+
+- name: Instalar Flask y Gunicorn
+  pip:
+    name: 
+      - flask
+      - gunicorn
+    state: present
+
+- name: Crear directorio para la aplicación Flask
+  file:
+    path: /opt/flask_app
+    state: directory
+
+- name: Copiar la aplicación Flask
+  template:
+    src: templates/flask_app.py.j2
+    dest: /opt/flask_app/app.py
+
+- name: Crear servicios systemd para la aplicación Flask
+  template:
+    src: templates/flask_app.service.j2
+    dest: /etc/systemd/system/flask_app_{{ item }}.service
+  with_items:
+    - 5000
+    - 5001
+    - 5002
+  notify: 
+    - Recargar systemd
+    - Reiniciar Flask app
+
+- name: Iniciar y habilitar los servicios de la aplicación
+  systemd:
+    name: flask_app_{{ item }}
+    enabled: yes
+    state: started
+  with_items:
+    - 5000
+    - 5001
+    - 5002
+
+- name: Configurar Nginx como balanceador de carga
+  template:
+    src: templates/nginx_load_balancer.conf.j2
+    dest: /etc/nginx/sites-available/default
+  notify: Reiniciar Nginx
