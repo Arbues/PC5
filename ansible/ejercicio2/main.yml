@@ -27,3 +27,19 @@
     - 'OpenSSH' 
     - 'Nginx Full'
   notify: Reiniciar UFW # reinicia para aplicar los cambios
+
+- name: Habilitar UFW
+  ufw:
+    state: enabled
+
+- name: Asegurar que UFW se inicia con el sistema
+  service:
+    name: ufw
+    enabled: yes
+    state: started
+
+- name: Asegurar que Nginx se inicia con el sistema
+  service:
+    name: nginx
+    enabled: yes
+    state: started

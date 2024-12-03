@@ -53,6 +53,9 @@ systemctl status nginx
 ls -l /etc/ssl/certs/nginx-selfsigned.crt
 ls -l /etc/ssl/private/nginx-selfsigned.key
 
+# Obtener mas permisos para ejecutar los comando posteriores
+sudo su
+
 # Verificar configuración de Nginx
 nginx -t
 
@@ -66,7 +69,6 @@ ufw status
 curl -k https://localhost
 
 # Verificar logs de Nginx
-tail -f /var/log/nginx/error.log
 tail -f /var/log/nginx/access.log
 ```
 
@@ -87,3 +89,6 @@ tail -f /var/log/nginx/access.log
 4. **Acceso Web**:
    - HTTPS funcional (aunque con advertencia por certificado autofirmado)
    - Redirección correcta a la aplicación Flask
+
+## Comprobacion de los resultados
+![](https://i.imgur.com/8G9Fr0i.png)
