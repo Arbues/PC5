@@ -1,3 +1,13 @@
+########### Pregunta 2 ###########
+- name: Reiniciar Nginx # para aplicar los nuevos cambios al servidor
+  service:
+    name: nginx
+    state: restarted
+
+- name: Reiniciar UFW # para aplicar los nuevos cambios al firewall
+  command: ufw reload
+
+########### Pregunta 3 ###########
 - name: Recargar systemd
   command: systemctl daemon-reload
 
@@ -10,10 +20,3 @@
     - 5001
     - 5002
 
-- name: Reiniciar Nginx
-  service:
-    name: nginx
-    state: restarted
-
-- name: Reiniciar UFW
-  command: ufw reload

@@ -5,12 +5,15 @@
     state: present
 
 - name: Generar certificados SSL autofirmados
-  command: openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj "/C=US/ST=State/L=City/O=Organization/OU=Department/CN=localhost" -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt
+  # Utiliza openssl para generar un certificado SSL autofirmado y una clave privada para habilitar HTTPS en el servidor web Nginx.
+  command: openssl req -new -newkey rsa:2048 -days 365 -nodes -x509 -subj "/C=US/ST=State/L=City/O=Organization/OU=Department/CN=localhost" -keyout /etc/ssl/private/nginx-selfsigned.key -out /etc/ssl/certs/nginx-selfsigned.crt 
 
 - name: Crear archivo de parámetros Diffie-Hellman
+  # Generar un archivo de parámetros Diffie-Hellman para mejorar la seguridad de la conexión SSL.
   command: openssl dhparam -out /etc/ssl/certs/dhparam.pem 2048
 
 - name: Configurar Nginx para utilizar SSL
+  # Copia y pega la plantilla de configuracion de Ngnix en la VM y luego reinicia el servicio Nginx.
   template:
     src: templates/nginx_ssl.conf.j2
     dest: /etc/nginx/sites-available/default
@@ -18,9 +21,9 @@
 
 - name: Habilitar y configurar el firewall UFW
   ufw:
-    rule: allow
-    name: "{{ item }}"
-  with_items:
-    - 'OpenSSH'
+    rule: allow # Permite el tráfico entrante
+    name: "{{ item }}" # de los items
+  with_items: #q estan definidos aqui
+    - 'OpenSSH' 
     - 'Nginx Full'
-  notify: Reiniciar UFW
+  notify: Reiniciar UFW # reinicia para aplicar los cambios

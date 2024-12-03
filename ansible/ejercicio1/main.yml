@@ -1,11 +1,13 @@
 ---
 - name: Actualizar los paquetes del sistema
   apt:
+  # Actualiza la lista de paquetes
     update_cache: yes
-    upgrade: dist
+    upgrade: dist # Actualiza los paquetes del sistema
 
 - name: Configurar la zona horaria y locales
   timezone:
+  # Zona horaria de Lima
     name: "America/Lima"
 
 - name: Crear un grupo llamado admin
@@ -17,5 +19,6 @@
   user:
     name: devuser
     groups: admin
+    # Contraseña cifrada a mano porque existe problemas con la instalacion de passlib dentro de la VM
     password: $6$OStSJfA6FA$ffSDaJBWfSpmnwlC6QWJwLG3PgZWQhPYUSezmRvSiUFpwSWy/57KuUuLg/4yGBpKx2TWYsPDz9Yq7nL2I2XT3/
     state: present
