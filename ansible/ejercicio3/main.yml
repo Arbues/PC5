@@ -1,3 +1,4 @@
+# main.yml
 ---
 - name: Instalar dependencias de Python
   apt:
@@ -16,10 +17,15 @@
     path: /opt/flask_app
     state: directory
 
+# Modificar esta tarea para usar with_items
 - name: Copiar la aplicación Flask
   template:
     src: templates/flask_app.py.j2
-    dest: /opt/flask_app/app.py
+    dest: "/opt/flask_app/app_{{ item }}.py"
+  with_items:
+    - 5000
+    - 5001
+    - 5002
 
 - name: Crear servicios systemd para la aplicación Flask
   template:
