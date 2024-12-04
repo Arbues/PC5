@@ -95,7 +95,7 @@ curl localhost:9100/metrics  # Node Exporter
 - Prometheus: http://192.168.56.12:9090
 - Grafana: http://192.168.56.12:3000
 
-## Comandos de Verificación
+## Pruebas en la web del host local
 
 ![](https://i.imgur.com/Mui5bUY.png)
 

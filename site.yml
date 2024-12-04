@@ -8,8 +8,8 @@
     #- import_tasks: ansible/ejercicio1/main.yml
     #- import_tasks: ansible/ejercicio2/main.yml
     #- import_tasks: ansible/ejercicio3/main.yml
-    - import_tasks: ansible/ejercicio4/main.yml
-    #- import_tasks: ansible/ejercicio5/main.yml
+    #- import_tasks: ansible/ejercicio4/main.yml
+    - import_tasks: ansible/ejercicio5/main.yml
     #- import_tasks: ansible/ejercicio6/main.yml
     #- import_tasks: ansible/ejercicio7/main.yml
     #- import_tasks: ansible/ejercicio8/main.yml

@@ -1,0 +1,18 @@
+vrrp_script check_postgres {
+    script "/usr/bin/pgrep postgres"
+    interval 2
+    weight 2
+}
+
+vrrp_instance VI_1 {
+    state MASTER
+    interface eth1
+    virtual_router_id 51
+    priority 100
+    virtual_ipaddress {
+        192.168.56.50
+    }
+    track_script {
+        check_postgres
+    }
+}

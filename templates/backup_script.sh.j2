@@ -1,0 +1,18 @@
+#!/bin/bash
+BACKUP_DIR="/opt/backups"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+DATABASE="postgres"
+
+# Crear backup
+pg_dump -U postgres $DATABASE > $BACKUP_DIR/backup_$TIMESTAMP.sql
+
+# Mantener solo los últimos 7 días de backups
+find $BACKUP_DIR -name "backup_*.sql" -mtime +7 -delete
+
+# Verificar el backup
+if [ $? -eq 0 ]; then
+    echo "Backup completado exitosamente: backup_$TIMESTAMP.sql"
+else
+    echo "Error en el backup"
+    exit 1
+fi

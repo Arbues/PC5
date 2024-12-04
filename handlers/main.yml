@@ -25,3 +25,15 @@
   systemd:
     name: prometheus
     state: restarted
+
+
+########### Pregunta 5 ###########
+- name: Reiniciar PostgreSQL
+  service:
+    name: postgresql
+    state: restarted
+
+- name: Reiniciar Keepalived
+  service:
+    name: keepalived
+    state: restarted

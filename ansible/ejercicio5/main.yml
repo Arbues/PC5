@@ -1,0 +1,99 @@
+---
+- name: Instalar PostgreSQL y dependencias
+  apt:
+    name:
+      - postgresql-12
+      - postgresql-contrib
+      - keepalived
+      - python3-psycopg2
+    state: present
+    update_cache: yes
+
+- name: Crear cluster PostgreSQL
+  shell: |
+    pg_createcluster 12 main --start || true
+  become: yes
+  args:
+    creates: /var/lib/postgresql/12/main/PG_VERSION
+
+- name: Configurar PostgreSQL para replicación
+  template:
+    src: postgresql.conf.j2
+    dest: /etc/postgresql/12/main/postgresql.conf
+    owner: postgres
+    group: postgres
+    mode: '0644'
+  notify: Reiniciar PostgreSQL
+
+- name: Actualizar método de autenticación en pg_hba.conf
+  template:
+    src: pg_hba.conf.j2
+    dest: /etc/postgresql/12/main/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: '0640'
+  notify: Reiniciar PostgreSQL
+
+- name: Establecer contraseña para usuario postgres
+  postgresql_user:
+    name: postgres
+    password: postgres123
+    state: present
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+
+- name: Esperar a que PostgreSQL esté listo
+  wait_for:
+    port: 5432
+    timeout: 60
+    delay: 10
+
+- name: Crear usuario de replicación
+  postgresql_user:
+    name: replicator
+    password: replicator123
+    role_attr_flags: REPLICATION,LOGIN
+  become: yes
+  become_user: postgres
+  vars:
+    ansible_ssh_pipelining: true
+
+- name: Configurar Keepalived
+  template:
+    src: templates/keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+  notify: Reiniciar Keepalived
+
+- name: Crear directorio de backup
+  file:
+    path: /opt/backups
+    state: directory
+    mode: '0755'
+
+- name: Copiar script de backup
+  template:
+    src: templates/backup_script.sh.j2
+    dest: /opt/backups/backup_script.sh
+    mode: '0755'
+
+- name: Configurar cron para backups
+  cron:
+    name: "PostgreSQL Backup"
+    hour: "3"
+    minute: "0"
+    job: "/opt/backups/backup_script.sh"
+    user: postgres
+
+- name: Asegurar que PostgreSQL está ejecutándose
+  service:
+    name: postgresql
+    state: started
+    enabled: yes
+
+- name: Asegurar que Keepalived está ejecutándose
+  service:
+    name: keepalived
+    state: started
+    enabled: yes
