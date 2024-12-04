@@ -4,6 +4,31 @@
 
 Proyecto de automatización y despliegue usando Ansible, Docker y herramientas DevOps para la PC5.
 
+## Estructura dle trabajo
+
+La estructura del proyecto es la siguiente:
+
+```bash
+.
+├── README.md                 # Documentación principal
+├── ansible/                  # Playbooks de Ansible por ejercicio
+│   ├── ejercicio1-10/       # Directorios con main.yml para cada ejercicio
+├── docs/                     # Documentación detallada por ejercicio
+│   ├── Ejercicio1-10.md     # Documentación específica de cada ejercicio
+├── handlers/                 # Manejadores de eventos Ansible
+│   └── main.yml
+├── site.yml                 # Playbook principal
+├── templates/               # Plantillas para configuraciones
+│   ├── Dockerfile.j2        # Template para Docker
+│   ├── nginx_*.j2          # Configuraciones de Nginx
+│   ├── flask_*.j2          # Configuraciones de Flask
+│   ├── postgresql_*.j2     # Configuraciones de PostgreSQL
+│   └── otros templates     # Otras plantillas de configuración
+└── vagrant/                 # Configuración de entorno virtual
+    └── Vagrantfile         # Definición de máquina virtual
+```
+```
+
 ## Requisitos Previos
 
 ### Software Necesario
