@@ -37,10 +37,13 @@ sudo apt install ansible
 
 # Clonar repositorio
 
-git clone <URL-repo> cd PC5 
+git clone https://github.com/Arbues/PC5.git 
+cd PC5/vagrant 
 ```
 
 ## Configuración y Ejecución
+
+Nota: Al principio todos los ejercicios van a estar comentados, si requiere ejecutar el ejercicio 6, debera descomentar tambien los anteriores, esto debido a que algunos ejercicios posteriores toman por echo configuraciones previas :D 
 
 ### Iniciar Entorno
 
@@ -65,15 +68,15 @@ vagrant ssh
 
 # Ejecutar todos los ejercicios
 
-ansible-playbook [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)
+ansible-playbook site.yml
 
 # Ejecutar ejercicio específico
 
-ansible-playbook [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html) --tags "ejercicioN"
+ansible-playbook site.yml --tags "ejercicioN"
 
 # Modo prueba
 
-ansible-playbook [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html) --check 
+ansible-playbook site.yml --check 
 ```
 
 ## Estructura de Ejercicios
@@ -82,13 +85,13 @@ ansible-playbook [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Loc
 
 - Sistema base
 - Usuarios y grupos
-- [Ver documentación](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)
+- [Ver documentación](https://github.com/Arbues/PC5/blob/main/docs/Ejercicio1.md)
 
 ### 2. Servicios Web Seguros
 
 - Nginx + SSL
 - Firewall UFW
-- [Ver documentación](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)
+- [Ver documentación](https://github.com/Arbues/PC5/blob/main/docs/Ejercicio2.md)
 
 [Ejercicios 3-10...]
 
@@ -97,8 +100,8 @@ ansible-playbook [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Loc
 ### Dependencias
 
 - Los ejercicios son incrementales
-- Descomentar ejercicios previos en [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)
-- Revisar docs antes de ejecutar
+- Descomentar ejercicios previos en [site.yml](https://github.com/Arbues/PC5/blob/main/site.yml)
+- Revisar docs antes de ejecutar (ya que el ejercicio 9 y 10 no se logro solucionar los bugs)
 
 ### Troubleshooting
 
@@ -117,11 +120,6 @@ systemctl status <servicio>
 vagrant destroy -f vagrant up 
 ```
 
-### Mantenimiento
-
-- Backups regulares recomendados
-- Monitorear recursos
-- Actualizar dependencias
 
 ## Contribución
 
@@ -130,9 +128,3 @@ vagrant destroy -f vagrant up
 3. Commit cambios
 4. Push a la rama
 5. Crear Pull Request
-
-### Estándares
-
-- Seguir convenciones Ansible
-- Documentar cambios
-- Agregar pruebas

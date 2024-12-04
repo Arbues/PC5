@@ -1,4 +1,4 @@
-# Documentación Ejercicio 9: Orquestación con Docker Compose
+# Documentación Ejercicio 9: Orquestación con Docker Compose (Aun hay presencia de errores)
 
 ## 1. Componentes Principales
 
@@ -34,67 +34,37 @@
 
 ## 2. Verificación y Comprobación
 
-### 2.1 Comandos de Verificación
-``` bash
-# Verificar instalación de Docker Compose
-docker-compose --version
-
-# Verificar servicios en ejecución
+### 2.1 Comandos Esenciales
+```bash
+# Verificar estado del despliegue
 docker-compose ps
 
-# Comprobar logs de servicios
+# Revisar logs
 docker-compose logs
 
-# Verificar estado de contenedores
-docker ps -a
-
-# Comprobar red creada
-docker network ls
-
-# Verificar puertos en escucha
-netstat -tulpn | grep -E '5000|5001|5002|80'
-
-# Probar balanceador de carga
+# Verificar balanceador
 curl localhost:80
+
+# Comprobar aplicaciones Flask
+curl localhost:5000
 ```
-### 2.2 Comprobación de Recursos
-``` bash
-# Estado de los servicios
-systemctl status docker
 
-# Verificar configuración Nginx
-curl -I localhost:80
-
-# Comprobar respuesta de aplicaciones Flask
-for port in 5000 5001 5002; do curl localhost:$port; done
-```
-## 3. Mantenimiento y Gestión
-
-### 3.1 Operaciones Comunes
-``` bash
+### 2.2 Mantenimiento Básico
+```bash
 # Reiniciar servicios
-cd /opt/docker_compose_app && docker-compose restart
-
-# Actualizar servicios
-cd /opt/docker_compose_app && docker-compose up -d --build
+docker-compose restart
 
 # Detener servicios
-cd /opt/docker_compose_app && docker-compose down
-```
-### 3.2 Monitoreo
-``` bash
-# Ver estadísticas de contenedores
-docker stats
+docker-compose down
 
-# Monitorear logs en tiempo real
+# Monitorear en tiempo real
 docker-compose logs -f
-
-# Verificar uso de recursos
-docker-compose top
 ```
-## 4. Solución de Problemas
+
+## 3. Solución de Problemas
 
 - Verificar permisos de archivos en `/opt/docker_compose_app`
 - Comprobar conectividad entre contenedores
 - Revisar logs de aplicaciones y Nginx
 - Verificar configuración de puertos y redes
+- Aun no se soluciona los bugs :c

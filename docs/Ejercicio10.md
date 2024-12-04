@@ -1,8 +1,8 @@
-# Documentación Ejercicio 10: Implementación CI con Pytest y Docker
+# Documentación Ejercicio 10: Implementación CI con Pytest y Docker (Aun hay presencia de errores)
 
 ## Descripción General
 
-Este ejercicio implementa un pipeline completo de Integración Continua (CI) utilizando GitHub Actions, Pytest y Docker, integrándose con la infraestructura Ansible existente.
+Este ejercicio implementa un pipeline de Integración Continua (CI) utilizando GitHub Actions, Pytest y Docker, integrándose con la infraestructura Ansible existente.
 
 ## Componentes Principales
 
@@ -46,10 +46,10 @@ Este ejercicio implementa un pipeline completo de Integración Continua (CI) uti
 
 ## Verificación y Comandos
 
-### Verificar Estado de Tareas
+### Verificar Estado de Tareas (No probar porque aun hay falla de errores)
 
 ``` bash 
-vagrant ssh cd /opt/docker_app ansible-playbook -i inventory [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html) --tags "ejercicio10" --check 
+vagrant ssh cd /opt/docker_app ansible-playbook -i inventory site.yml --tags "ejercicio10" --check 
 ```
 
 ### Comprobar Pruebas
@@ -73,18 +73,10 @@ netstat -tulpn | grep 500 curl localhost:5000 curl localhost:5001 curl localhost
 ### Logs y Diagnóstico
 
 ```bash 
-docker logs flask-app-5000 ansible-playbook [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html) --tags "ejercicio10" -v 
+docker logs flask-app-5000 ansible-playbook site.yml --tags "ejercicio10" -v 
 ```
 
 ## Dependencias y Prerrequisitos
-
-### Software Requerido
-
-- Python 3.8+
-- Docker
-- Pytest
-- Ansible
-- GitHub Actions configurado
 
 ### Variables de Entorno
 
@@ -105,12 +97,6 @@ docker logs flask-app-5000 ansible-playbook [site.yml](vscode-file://vscode-app
 - Logs de Ansible: `/var/log/ansible.log`
 - Logs de aplicación: Dentro de cada contenedor
 
-### Métricas Importantes
-
-- Tiempo de ejecución de pruebas
-- Estado de contenedores
-- Uso de recursos
-- Tiempo de construcción de imagen
 
 ## Resolución de Problemas
 
@@ -125,7 +111,7 @@ docker logs flask-app-5000 ansible-playbook [site.yml](vscode-file://vscode-app
 
 ### Verificación de Salud
 
-```bash ansible-playbook [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html) --tags "ejercicio10" --list-tasks docker-compose ps ```
+```bash ansible-playbook site.yml --tags "ejercicio10" --list-tasks docker-compose ps ```
 
 ## Notas Adicionales
 
@@ -133,3 +119,4 @@ docker logs flask-app-5000 ansible-playbook [site.yml](vscode-file://vscode-app
 - Backup recomendado antes de actualizaciones
 - Monitorear uso de recursos
 - Revisar logs periódicamente
+- Aun no se soluciona los bugs :c

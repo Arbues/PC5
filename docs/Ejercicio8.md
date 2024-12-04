@@ -107,3 +107,7 @@ sudo docker images | grep flask-app
 - Exposición mínima de puertos necesarios
 - Limpieza automática de recursos no utilizados
 - Configuración segura de Nginx como reverse proxy
+
+## Pruebas del resultado
+
+![](https://i.imgur.com/IXBzgxE.png)
