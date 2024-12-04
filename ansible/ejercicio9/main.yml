@@ -1,0 +1,50 @@
+---
+- name: Instalar Docker Compose
+  get_url:
+    url: "https://github.com/docker/compose/releases/download/v2.20.0/docker-compose-linux-x86_64"
+    dest: /usr/local/bin/docker-compose
+    mode: '0755'
+
+- name: Crear directorio para la aplicación Docker Compose
+  file:
+    path: /opt/docker_compose_app
+    state: directory
+    mode: '0755'
+
+- name: Copiar archivos necesarios
+  copy:
+    src: "{{ item.src }}"
+    dest: "/opt/docker_compose_app/{{ item.dest }}"
+    mode: '0644'
+  with_items:
+    - { src: 'templates/Dockerfile.j2', dest: 'Dockerfile' }
+    - { src: 'templates/requirements.txt.j2', dest: 'requirements.txt' }
+    - { src: 'templates/flask_app.py.j2', dest: 'app.py' }
+    - { src: 'templates/nginx_load_balancer.conf.j2', dest: 'nginx_load_balancer.conf' }
+
+- name: Copiar docker-compose.yml
+  template:
+    src: templates/docker-compose.yml.j2
+    dest: /opt/docker_compose_app/docker-compose.yml
+    mode: '0644'
+
+- name: Detener servicios existentes si hay
+  command: docker-compose down
+  args:
+    chdir: /opt/docker_compose_app
+  ignore_errors: yes
+
+- name: Levantar servicios con Docker Compose
+  command: docker-compose up -d --build
+  args:
+    chdir: /opt/docker_compose_app
+
+- name: Esperar a que los servicios estén disponibles
+  wait_for:
+    port: "{{ item }}"
+    timeout: 30
+  with_items:
+    - 5000
+    - 5001
+    - 5002
+    - 80
