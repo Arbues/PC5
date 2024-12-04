@@ -11,14 +11,14 @@
 - name: Recargar systemd
   command: systemctl daemon-reload
 
-- name: Reiniciar Flask app
-  systemd:
-    name: flask_app_{{ item }}
-    state: restarted
-  with_items:
-    - 5000
-    - 5001
-    - 5002
+# - name: Reiniciar Flask app
+#   systemd:
+#     name: flask_app_{{ item }}
+#     state: restarted
+#   with_items:
+#     - 5000
+#     - 5001
+#     - 5002
 
 ########### Pregunta 4 ###########
 - name: Reiniciar Prometheus
@@ -56,3 +56,27 @@
   service:
     name: apparmor
     state: restarted
+
+########### Pregunta 8 ###########
+
+- name: Reiniciar Docker
+  service:
+    name: docker
+    state: restarted
+
+- name: Recargar Nginx
+  service:
+    name: nginx
+    state: reloaded
+
+########### Pregunta 9 ###########
+- name: Reiniciar Docker Compose
+  command: docker-compose restart
+  args:
+    chdir: /opt/docker_compose_app
+
+########### Pregunta 10 ###########
+- name: Notificar resultados de CI
+  debug:
+    msg: "Pipeline de CI completado exitosamente"
+  when: test_results is defined and test_results.rc == 0

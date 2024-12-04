@@ -1,0 +1,58 @@
+---
+- name: Copiar archivos de prueba
+  template:
+    src: templates/test_flask_app.py.j2
+    dest: /opt/docker_app/test_flask_app.py
+    mode: '0644'
+
+- name: Actualizar requirements.txt con dependencias de prueba
+  template:
+    src: templates/requirements.txt.j2
+    dest: /opt/docker_app/requirements.txt
+    mode: '0644'
+
+- name: Instalar dependencias de prueba
+  pip:
+    requirements: /opt/docker_app/requirements.txt
+    state: present
+
+- name: Ejecutar pruebas
+  command: pytest /opt/docker_app/test_flask_app.py
+  register: test_results
+
+- name: Mostrar resultados de las pruebas
+  debug:
+    var: test_results.stdout_lines
+
+- name: Verificar si las pruebas pasaron
+  fail:
+    msg: "Las pruebas fallaron"
+  when: test_results.rc != 0
+
+- name: Construir y desplegar contenedores solo si las pruebas pasan
+  block:
+    - name: Construir imagen Docker
+      docker_image:
+        name: flask-app
+        build:
+          path: /opt/docker_app
+          pull: yes
+        source: build
+        force_source: yes
+      
+    - name: Desplegar contenedores
+      docker_container:
+        name: "flask-app-{{ item }}"
+        image: flask-app
+        state: started
+        recreate: yes
+        ports:
+          - "{{ item }}:5000"
+        env:
+          PORT: "5000"
+      with_items:
+        - 5000
+        - 5001
+        - 5002
+      notify: Reiniciar Nginx
+  when: test_results.rc == 0
