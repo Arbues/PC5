@@ -1,0 +1,144 @@
+---
+- name: Instalar dependencias para Docker
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - lsb-release
+    state: present
+    update_cache: yes
+
+- name: Agregar clave GPG de Docker
+  apt_key:
+    url: https://download.docker.com/linux/ubuntu/gpg
+    state: present
+
+- name: Agregar repositorio Docker
+  apt_repository:
+    repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable
+    state: present
+
+- name: Instalar Docker
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+    update_cache: yes
+
+- name: Asegurar que Docker está ejecutándose
+  service:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Crear directorio para la aplicación Docker
+  file:
+    path: /opt/docker_app
+    state: directory
+    mode: '0755'
+
+- name: Copiar requirements.txt
+  template:
+    src: templates/requirements.txt.j2
+    dest: /opt/docker_app/requirements.txt
+
+- name: Copiar Dockerfile
+  template:
+    src: templates/Dockerfile.j2
+    dest: "/opt/docker_app/Dockerfile.{{ item }}"
+  with_items:
+    - 5000
+    - 5001
+    - 5002
+
+- name: Copiar aplicación Flask
+  template:
+    src: templates/flask_app.py.j2
+    dest: /opt/docker_app/app.py
+
+- name: Asegurar que el directorio existe
+  file:
+    path: /opt/docker_app
+    state: directory
+    mode: '0755'
+
+- name: Copiar archivos necesarios
+  copy:
+    src: "{{ item.src }}"
+    dest: "/opt/docker_app/{{ item.dest }}"
+    mode: '0644'
+  with_items:
+    - { src: 'templates/Dockerfile.j2', dest: 'Dockerfile' }
+    - { src: 'templates/requirements.txt.j2', dest: 'requirements.txt' }
+    - { src: 'templates/flask_app.py.j2', dest: 'app.py' }
+
+- name: Construir imagen Docker
+  community.docker.docker_image:
+    name: flask-app
+    build:
+      path: /opt/docker_app
+      pull: yes
+    source: build
+    force_source: yes
+
+# Primero detener los servicios antiguos
+- name: Detener servicios antiguos de Flask
+  systemd:
+    name: "flask_app_{{ item }}"
+    state: stopped
+    enabled: no
+  with_items:
+    - 5000
+    - 5001
+    - 5002
+  ignore_errors: yes
+
+# Asegurarnos que los puertos estén libres
+- name: Matar cualquier proceso usando los puertos requeridos
+  shell: "lsof -ti:{{ item }} | xargs kill -9 || true"
+  with_items:
+    - 5000
+    - 5001
+    - 5002
+  ignore_errors: yes
+
+# Luego continuar con las tareas existentes...
+- name: Eliminar contenedores antiguos
+  docker_container:
+    name: "flask-app-{{ item }}"
+    state: absent
+  with_items:
+    - 5000
+    - 5001
+    - 5002
+
+- name: Ejecutar contenedores Docker
+  docker_container:
+    name: "flask-app-{{ item }}"
+    image: flask-app
+    state: started
+    recreate: yes
+    ports:
+      - "{{ item }}:5000"
+    env:
+      PORT: "5000"
+  with_items:
+    - 5000
+    - 5001
+    - 5002
+
+- name: Configurar Nginx para balancear carga entre contenedores
+  template:
+    src: templates/nginx_load_balancer.conf.j2
+    dest: /etc/nginx/sites-available/default
+  notify: Reiniciar Nginx
+
+- name: Limpiar imágenes Docker no utilizadas
+  docker_prune:
+    images: yes
+    images_filters:
+      dangling: true
