@@ -20,3 +20,8 @@
     - 5001
     - 5002
 
+########### Pregunta 4 ###########
+- name: Reiniciar Prometheus
+  systemd:
+    name: prometheus
+    state: restarted

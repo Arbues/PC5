@@ -1,0 +1,20 @@
+groups:
+- name: flask_alerts
+  rules:
+  - alert: HighRequestLatency
+    expr: flask_http_request_duration_seconds > 0.5
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "High request latency on {% raw %}{{ $labels.instance }}{% endraw %}"
+      description: "Flask request latency is above 0.5s on {% raw %}{{ $labels.instance }}{% endraw %}"
+
+  - alert: HighErrorRate
+    expr: rate(flask_http_request_total{status="500"}[5m]) > 0.1
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High error rate on {% raw %}{{ $labels.instance }}{% endraw %}"
+      description: "Error rate is above 10% on {% raw %}{{ $labels.instance }}{% endraw %}"

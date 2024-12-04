@@ -1,0 +1,99 @@
+---
+- name: Instalar dependencias
+  apt:
+    name:
+      - prometheus
+      - prometheus-node-exporter
+      - python3-pip
+    state: present
+    update_cache: yes # Actualizar la caché de paquetes
+
+- name: Instalar Grafana
+  apt:
+    deb: https://dl.grafana.com/oss/release/grafana_10.0.3_amd64.deb
+    state: present
+
+- name: Instalar bibliotecas Python para métricas
+  pip:
+    name:
+      - prometheus_client
+      - flask-prometheus-metrics
+    state: present
+
+- name: Crear directorio de configuración Prometheus
+  file:
+    path: /etc/prometheus
+    state: directory
+    mode: '0755'
+
+- name: Configurar Prometheus
+  template:
+    src: templates/prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+  notify: Reiniciar Prometheus
+
+- name: Configurar reglas de alertas Prometheus
+  template:
+    src: templates/alert_rules.yml.j2
+    dest: /etc/prometheus/alert_rules.yml
+  notify: Reiniciar Prometheus
+
+
+- name: Permitir puertos para Prometheus y Grafana
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  with_items:
+    - '9090'  # Prometheus
+    - '3000'  # Grafana
+    - '9100'  # Node Exporter
+  notify: Reiniciar UFW
+
+- name: Actualizar aplicación Flask con métricas
+  template:
+    src: templates/flask_app_metrics.py.j2
+    dest: "/opt/flask_app/app_{{ item }}.py"
+  with_items:
+    - 5000
+    - 5001
+    - 5002
+  notify: Reiniciar Flask app
+
+- name: Asegurar que Prometheus está ejecutándose
+  systemd:
+    name: prometheus
+    state: started
+    enabled: yes
+
+- name: Asegurar que Grafana está ejecutándose
+  systemd:
+    name: grafana-server
+    state: started
+    enabled: yes
+
+- name: Esperar que Grafana esté disponible
+  uri:
+    url: http://localhost:3000
+    status_code: 200
+    timeout: 60
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 2
+
+- name: Configurar Prometheus como fuente de datos en Grafana
+  uri:
+    url: http://localhost:3000/api/datasources
+    method: POST
+    user: admin
+    password: admin
+    force_basic_auth: yes
+    body_format: json
+    body:
+      name: Prometheus
+      type: prometheus
+      url: http://localhost:9090
+      access: proxy
+      isDefault: true
+    status_code: 200,409

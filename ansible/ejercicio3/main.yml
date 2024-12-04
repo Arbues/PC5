@@ -17,7 +17,6 @@
     path: /opt/flask_app
     state: directory
 
-# Modificar esta tarea para usar with_items
 - name: Copiar la aplicación Flask
   template:
     src: templates/flask_app.py.j2
