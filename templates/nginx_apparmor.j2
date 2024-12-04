@@ -1,0 +1,14 @@
+#include <tunables/global>
+
+profile nginx /usr/sbin/nginx {
+  #include <abstractions/base>
+  #include <abstractions/nameservice>
+  #include <abstractions/nginx>
+
+  deny /etc/nginx/conf.d/* w,
+  deny /etc/nginx/sites-available/* w,
+  deny /etc/nginx/sites-enabled/* w,
+  
+  /var/log/nginx/*.log w,
+  /var/run/nginx.pid w,
+}

@@ -30,18 +30,18 @@ Este ejercicio implementa un balanceador de carga utilizando Nginx para distribu
 
 ### 3. Archivos de Plantilla
 
-#### [flask_app.py.j2](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)
+#### [flask_app.py.j2](https://github.com/Arbues/PC5/blob/main/templates/flask_app.py.j2)
 
 - Define una aplicación Flask básica
 - Configura el puerto dinámicamente usando variables
 
-#### [flask_app.service.j2](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)
+#### [flask_app.service.j2](https://github.com/Arbues/PC5/blob/main/templates/flask_app.service.j2)
 
 - Define servicios systemd para cada instancia Flask
 - Configura Gunicorn como servidor WSGI
 - Establece parámetros de ejecución
 
-#### [nginx_load_balancer.conf.j2](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html)
+#### [nginx_load_balancer.conf.j2](https://github.com/Arbues/PC5/blob/main/templates/nginx_load_balancer.conf.j2)
 
 - Define configuración del balanceador de carga
 - Establece upstream servers

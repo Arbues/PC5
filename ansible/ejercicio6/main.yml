@@ -1,0 +1,62 @@
+---
+- name: Instalar herramientas de seguridad
+  apt:
+    name:
+      - lynis
+      - apparmor
+      - apparmor-utils
+      - rkhunter
+      - fail2ban
+    state: present
+    update_cache: yes
+
+- name: Configurar fail2ban
+  template:
+    src: templates/jail.local.j2
+    dest: /etc/fail2ban/jail.local
+  notify: Reiniciar Fail2ban
+
+- name: Configurar política de contraseñas
+  template:
+    src: templates/pwquality.conf.j2
+    dest: /etc/security/pwquality.conf
+  notify: Reiniciar PAM
+
+- name: Endurecer configuración SSH
+  template:
+    src: templates/sshd_config.j2
+    dest: /etc/ssh/sshd_config
+  notify: Reiniciar SSH
+
+- name: Endurecer configuración Nginx
+  template:
+    src: templates/nginx_hardened.conf.j2
+    dest: /etc/nginx/conf.d/security.conf
+  notify: Reiniciar Nginx
+
+- name: Configurar AppArmor
+  template:
+    src: templates/nginx_apparmor.j2
+    dest: /etc/apparmor.d/usr.sbin.nginx
+  notify: Reiniciar AppArmor
+
+- name: Ejecutar Lynis
+  command: lynis audit system
+  register: lynis_output
+
+- name: Guardar reporte de Lynis
+  copy:
+    content: "{{ lynis_output.stdout }}"
+    dest: /var/log/lynis_report.txt
+
+- name: Configurar permisos restrictivos en archivos críticos
+  file:
+    path: "{{ item }}"
+    mode: '0600'
+    owner: root
+    group: root
+  with_items:
+    - /etc/shadow
+    - /etc/gshadow
+    - /etc/passwd-
+    - /etc/group-

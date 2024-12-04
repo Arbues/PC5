@@ -37,3 +37,22 @@
   service:
     name: keepalived
     state: restarted
+
+########### Pregunta 6 ###########
+- name: Reiniciar SSH
+  service:
+    name: sshd
+    state: restarted
+
+- name: Reiniciar Fail2ban
+  service:
+    name: fail2ban
+    state: restarted
+
+- name: Reiniciar PAM
+  command: pam-auth-update --force
+
+- name: Reiniciar AppArmor
+  service:
+    name: apparmor
+    state: restarted
