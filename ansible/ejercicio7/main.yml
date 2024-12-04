@@ -1,0 +1,56 @@
+---
+- name: Instalar Pytest y dependencias
+  pip:
+    name:
+      - pytest
+      - pytest-cov
+    state: present
+
+- name: Crear directorio para pruebas
+  file:
+    path: "/opt/flask_app/tests"
+    state: directory
+    mode: '0755'
+
+- name: Crear directorio para resultados de pruebas
+  file:
+    path: "/opt/flask_app/test-results"
+    state: directory
+    mode: '0755'
+
+- name: Copiar archivo de configuración de pytest
+  template:
+    src: templates/pytest.ini.j2
+    dest: /opt/flask_app/pytest.ini
+    mode: '0644'
+
+- name: Copiar archivos de prueba
+  template:
+    src: templates/test_flask_app.py.j2
+    dest: /opt/flask_app/tests/test_flask_app.py
+    mode: '0644'
+
+- name: Crear symlink de app_5000.py a app.py
+  file:
+    src: /opt/flask_app/app_5000.py
+    dest: /opt/flask_app/app.py
+    state: link
+    force: yes
+
+- name: Ejecutar pruebas con pytest
+  command: pytest
+  args:
+    chdir: /opt/flask_app
+  environment:
+    PYTHONPATH: "/opt/flask_app:{{ ansible_env.PYTHONPATH | default('') }}"
+  register: pytest_result
+  ignore_errors: yes
+
+- name: Mostrar resultados de las pruebas
+  debug:
+    var: pytest_result.stdout_lines
+
+- name: Verificar si las pruebas fallaron
+  fail:
+    msg: "Las pruebas fallaron. Por favor, revisa los resultados."
+  when: pytest_result.rc != 0

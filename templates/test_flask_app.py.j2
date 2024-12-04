@@ -1,0 +1,19 @@
+import pytest
+from app import app
+
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    with app.test_client() as client:
+        yield client
+
+def test_home_page(client):
+    """Test que la ruta principal retorna 'Hello, World!' y código 200"""
+    rv = client.get('/')
+    assert rv.status_code == 200
+    assert b'Hello, World!' in rv.data
+
+def test_invalid_route(client):
+    """Test que una ruta inválida retorna 404"""
+    rv = client.get('/invalid_route')
+    assert rv.status_code == 404

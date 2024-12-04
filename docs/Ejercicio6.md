@@ -13,9 +13,9 @@ El ejercicio implementa medidas de seguridad avanzada utilizando Ansible para fo
 
 ### 2.1 Archivos Principales
 
-- [site.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html): Archivo principal que importa las tareas del ejercicio 6
-- [main.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html): Contiene las tareas principales
-- [main.yml](vscode-file://vscode-app/c:/Users/kikhe/AppData/Local/Programs/Microsoft%20VS%20Code/resources/app/out/vs/code/electron-sandbox/workbench/workbench.html): Manejadores específicos para reinicio de servicios
+- [site.yml](https://github.com/Arbues/PC5/blob/main/site.yml): Archivo principal que importa las tareas del ejercicio 6
+- [main.yml](https://github.com/Arbues/PC5/blob/main/ansible/ejercicio6/main.yml): Contiene las tareas principales
+- [main.yml](https://github.com/Arbues/PC5/blob/main/handlers/main.yml): Manejadores específicos para reinicio de servicios
 
 ### 2.2 Templates Utilizados
 
