@@ -24,8 +24,8 @@
     rule: allow # Permite el tráfico entrante
     name: "{{ item }}" # de los items
   with_items: #q estan definidos aqui
-    - 'OpenSSH' 
-    - 'Nginx Full'
+    - 'OpenSSH' # para permitir el tráfico SSH en el puerto 22
+    - 'Nginx Full' # para permitir el tráfico HTTP y HTTPS en los puertos 80 y 443 respectivamente
   notify: Reiniciar UFW # reinicia para aplicar los cambios
 
 - name: Habilitar UFW

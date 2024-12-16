@@ -7,6 +7,7 @@ User=vagrant
 Group=www-data
 WorkingDirectory=/opt/flask_app
 Environment="PATH=/usr/local/bin"
+# 3 workers de Gunicorn para bindear el puerto con el objeto app dentro del app_item.py
 ExecStart=/usr/local/bin/gunicorn --workers 3 --bind 0.0.0.0:{{ item }} app_{{ item }}:app
 
 [Install]

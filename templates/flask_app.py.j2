@@ -2,11 +2,14 @@ from flask import Flask
 import os
 
 app = Flask(__name__)
-port = int(os.environ.get('PORT', 5000))
+#port = int(os.environ.get('PORT', 5000)) # este no funciona xq no difinimos PORT en como variable global
+porta = int({{ item }})
 
 @app.route('/')
 def hello():
-    return f'Hello from container running on port {port}!'
+    return f'Hello from container running on port {porta}!'
 
+# esto nunca se llama nunca porque gunicorn tiene su propio sistema de bindeo
+# a menos q se ejecute este archivo.py directamente
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=porta)
